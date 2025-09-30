@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Detail PMB Online</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+  <div class="max-w-xl mx-auto mt-8 p-6 bg-white rounded shadow">
+    <h1 class="text-2xl font-bold mb-2">Detail PMB Online</h1>
+    <hr class="mb-4" />
+    <div class="mb-2">
+      <span class="font-semibold">Nama:</span> Hafidz Rizal Al-Fadlil
+    </div>
+    <div class="mb-4">
+      <span class="font-semibold">Prodi:</span> Informatika
+    </div>
+    <hr class="mb-4" />
+    <div class="mb-4 flex items-center space-x-2">
+      <span id="checkBayar" class="text-green-600 text-xl" style="display: none;">✅</span>
+      <span class="font-semibold">Pembayaran</span>
+    </div>
+    <label class="inline-flex items-center mb-4">
+      <input type="checkbox" id="bayar" class="form-checkbox text-green-600" />
+      <span class="ml-2">Sudah Lunas</span>
+    </label>
+    <hr class="mb-4" />
+    <div class="mb-4 flex items-center space-x-2">
+      <span id="checkRapor" class="text-green-600 text-xl" style="display: none;">✅</span>
+      <span class="font-semibold">Rata-rata Nilai Rapor:</span>
+      <input type="number" id="rapor" min="0" max="100" class="ml-2 border rounded px-2 py-1 w-20" />
+    </div>
+    <hr class="mb-4" />
+    <div class="mb-2 flex items-center space-x-2">
+      <span id="checkDoc" class="text-green-600 text-xl" style="display: none;">✅</span>
+      <span class="font-semibold">Dokumen yang diupload:</span>
+    </div>
+    <div class="mb-4 ml-6 space-y-2">
+      <label class="inline-flex items-center">
+        <input type="checkbox" id="ktp" class="form-checkbox text-green-600" />
+        <span class="ml-2">KTP</span>
+      </label><br />
+      <label class="inline-flex items-center">
+        <input type="checkbox" id="kk" class="form-checkbox text-green-600" />
+        <span class="ml-2">Kartu Keluarga</span>
+      </label><br />
+      <label class="inline-flex items-center">
+        <input type="checkbox" id="raporDoc" class="form-checkbox text-green-600" />
+        <span class="ml-2">Rapor</span>
+      </label><br />
+      <label class="inline-flex items-center">
+        <input type="checkbox" id="ijazah" class="form-checkbox text-green-600" />
+        <span class="ml-2">Ijazah</span>
+      </label><br />
+      <label class="inline-flex items-center">
+        <input type="checkbox" id="skl" class="form-checkbox text-green-600" />
+        <span class="ml-2">Surat Keterangan Lulus</span>
+      </label><br />
+      <label class="inline-flex items-center">
+        <input type="checkbox" id="foto" class="form-checkbox text-green-600" />
+        <span class="ml-2">Pas Foto</span>
+      </label>
+    </div>
+    <hr class="mb-4" />
+    <div class="mb-4 flex items-center space-x-2">
+      <span id="checkTes" class="text-green-600 text-xl" style="display: none;">✅</span>
+      <span class="font-semibold">Hasil Tes PMB:</span>
+      <input type="number" id="tes" min="0" max="100" class="ml-2 border rounded px-2 py-1 w-20" />
+    </div>
+    <hr class="mb-4" />
+    <button id="btnStartUjian" disabled class="w-full py-2 rounded font-semibold transition
+      bg-gray-300 text-gray-600 cursor-not-allowed
+      enabled:bg-green-600 enabled:text-white enabled:cursor-pointer">
+      Belum bisa jadi Mahasiswa Baru
+    </button>
+    <hr class="my-4" />
+    <small>
+      <b>Rule Logika:</b>
+      <ul class="list-disc ml-6 mt-2 text-sm">
+        <li>Jika sudah bayar <code class="text-purple-600">AND</code></li>
+        <li>Nilai Rapor &ge; 70 <code class="text-purple-600">AND</code></li>
+        <li>Tiga Berkas wajib sudah diupload <code class="text-purple-600">AND</code></li>
+        <li>Hasil Tes PMB &ge;75 <code class="text-purple-600">MAKA</code></li>
+        <li>Boleh dinyatakan sebagai MABA</li>
+        <li>
+          Tiga Berkas wajib adalah:
+          <ol class="list-decimal ml-6">
+            <li>Kartu Keluarga <code class="text-purple-600">OR</code> KTP</li>
+            <li>Rapor</li>
+            <li>Ijazah <code class="text-purple-600">OR</code> Surat Keterangan Lulus</li>
+          </ol>
+        </li>
+        <li>Pas Foto adalah opsional</li>
+      </ul>
+    </small>
+  </div>
+  <script>
+    const bayar = document.getElementById("bayar");
+    const rapor = document.getElementById("rapor");
+    const ktp = document.getElementById("ktp");
+    const kk = document.getElementById("kk");
+    const raporDoc = document.getElementById("raporDoc");
+    const ijazah = document.getElementById("ijazah");
+    const skl = document.getElementById("skl");
+    const tes = document.getElementById("tes");
+    const btn = document.getElementById("btnStartUjian");
+
+    const checkBayar = document.getElementById("checkBayar");
+    const checkRapor = document.getElementById("checkRapor");
+    const checkDoc = document.getElementById("checkDoc");
+    const checkTes = document.getElementById("checkTes");
+
+    function cekKelulusan() {
+      let sudahBayar = bayar.checked;
+      checkBayar.style.display = sudahBayar ? "inline" : "none";
+      let nilaiRapor = parseInt(rapor.value) || 0;
+      let nilaiTes = parseInt(tes.value) || 0;
+      checkRapor.style.display = nilaiRapor >= 70 ? "inline" : "none";
+      checkTes.style.display = nilaiTes >= 75 ? "inline" : "none";
+
+      let adaIdentitas = ktp.checked || kk.checked;
+      let adaRapor = raporDoc.checked;
+      let adaKelulusan = ijazah.checked || skl.checked;
+      checkDoc.style.display = adaIdentitas && adaRapor && adaKelulusan ? "inline" : "none";
+
+      let semuaSyarat =
+        sudahBayar &&
+        nilaiRapor >= 70 &&
+        adaIdentitas &&
+        adaRapor &&
+        adaKelulusan &&
+        nilaiTes >= 75;
+
+      if (semuaSyarat) {
+        btn.disabled = false;
+        btn.textContent = "Dinyatakan Sebagai MABA";
+      } else {
+        btn.disabled = true;
+        btn.textContent = "Belum bisa jadi Mahasiswa Baru";
+      }
+    }
+
+    document.querySelectorAll("input").forEach((el) => {
+      el.addEventListener("input", cekKelulusan);
+      el.addEventListener("change", cekKelulusan);
+    });
+  </script>
+</body>
+</html>
