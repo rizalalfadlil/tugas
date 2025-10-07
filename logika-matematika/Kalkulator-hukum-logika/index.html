@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+    <title>Kalkulator Hukum Logika - Hafidz Rizal Al-Fadlil</title>
+  </head>
+  <script>
+    // Variabel
+    const listHukum = [
+      {
+        pola: ["x && 1", "1 && x", "x || 0", "0 || x"],
+        nama: "Hukum Identitas",
+      },
+
+      {
+        pola: ["x && 0", "0 && x", "x || 1", "1 || x"],
+        nama: "Hukum Dominasi",
+      },
+      { pola: ["x && x", "x || x"], nama: "Hukum Idempotensi" },
+      { pola: ["x && !x", "!x && x"], nama: "Hukum Negasi (Kontradiksi)" },
+      { pola: ["x || !x", "!x || x"], nama: "Hukum Negasi (Tautologi)" },
+      { pola: ["x && y", "y && x"], nama: "Hukum Komutatif (AND)" },
+      { pola: ["x || y", "y || x"], nama: "Hukum Komutatif (OR)" },
+      {
+        pola: [
+          "(x || y) || z",
+          "x || (y || z)",
+          "(x && y) && z",
+          "x && (y && z)",
+        ],
+        nama: "Hukum Asosiatif",
+      },
+      {
+        pola: ["x && (y || z)", "(x && y) || (x && z)"],
+        nama: "Hukum Distributif (AND terhadap OR)",
+      },
+      {
+        pola: ["x || (y && z)", "(x || y) && (x || z)"],
+        nama: "Hukum Distributif (OR terhadap AND)",
+      },
+      { pola: ["x || (x && y)", "x && (x || y)"], nama: "Hukum Absorpsi" },
+      {
+        pola: ["!(x && y)", "!x || !y", "!(x || y)", "!x && !y"],
+        nama: "Hukum De Morgan",
+      },
+      { pola: ["x → y", "!x || y"], nama: "Definisi Implikasi (¬x ∨ y)" },
+      { pola: ["x → y", "!y → !x"], nama: "Hukum Kontraposisi" },
+      { pola: ["!!x"], nama: "Hukum Double Negasi" },
+    ];
+
+    const nilai = ["A", "B", "C", "1", "0"];
+    const ekspresi = ["&&", "||", "→", "(", ")", "!"];
+    let inputValues = [];
+    let hasilText = "";
+    let showList = false;
+
+    // Fungsi ketik
+    function type(value) {
+      inputValues.push(value);
+      updateText();
+    }
+    function deleteLast() {
+      inputValues.pop();
+      updateText();
+    }
+    function clear() {
+      inputValues = [];
+      updateText();
+    }
+
+    function updateText() {
+      const text = inputValues.join(" ");
+      const formattedText = formatText(text);
+      $("#input").val(formattedText);
+      cekHasil(formattedText);
+    }
+    function formatText(text) {
+      return text
+        .replaceAll("! ", "!")
+        .replaceAll("( ", "(")
+        .replaceAll(" )", ")");
+    }
+
+    // Fungsi Hasil
+    function cekHasil(text) {
+      const norm = normalizeExpression(text);
+      const hukum = listHukum.filter((hukum) =>
+        hukum.pola.some((pola) => pola.replaceAll(" ", "") === norm)
+      );
+      if (hukum.length > 0) {
+        hasilText = hukum[0].nama;
+      } else {
+        hasilText = "";
+      }
+      $("#result").text(hasilText);
+    }
+
+    function normalizeExpression(expr) {
+      expr = expr.replaceAll(/\s+/g, "");
+
+      const unik = [...new Set(expr.match(/[A-Za-z]/g))];
+      const mapping = {};
+      const pengganti = ["x", "y", "z"];
+
+      unik.forEach((huruf, i) => {
+        mapping[huruf] = pengganti[i] || pengganti[pengganti.length - 1];
+      });
+
+      let hasil = expr;
+      for (const [huruf, ganti] of Object.entries(mapping)) {
+        const regex = new RegExp(huruf, "g");
+        hasil = hasil.replaceAll(regex, ganti);
+      }
+
+      return hasil;
+    }
+
+    function ubahTampilanHasil() {
+      if (showList) {
+        listHukum.forEach(function (hukum) {
+          $(".listHukum").append(
+            `<div class="p-2">
+              <p class="font-semibold">${hukum.nama}</p>
+              <ul class="list-disc list-inside text-sm">
+                ${hukum.pola.map((p, i) => `<li>${p}</li>`).join("")}
+              </ul>
+            </div>`
+          );
+        });
+      } else {
+        $(".listHukum").empty();
+      }
+    }
+    // Fungsi manipulasi dokumen
+    $(document).ready(function () {
+      nilai.forEach(function (n) {
+        $("#buttons").append(
+          `<button class="keyboard" value="${n}">${n}</button>`
+        );
+      });
+      ekspresi.forEach(function (n) {
+        $("#buttons2").append(
+          `<button class="keyboard" value="${n}">${n}</button>`
+        );
+      });
+
+      $(document).on("click", ".keyboard", function () {
+        type($(this).val());
+      });
+      $("#delete").on("click", function () {
+        deleteLast();
+      });
+      $("#clear").on("click", function () {
+        clear();
+      });
+
+      $("#toggleHasil").on("click", function () {
+        showList = !showList;
+        $("#toggleHasil").text(showList ? "sembunyikan" : "tampilkan");
+        ubahTampilanHasil();
+      });
+    });
+  </script>
+  <body class="h-screen bg-slate-50 p-20">
+    <div class="shadow-sm p-4 w-full max-w-xl mx-auto bg-white rounded-lg">
+      <div class="space-y-2">
+        <p>Nama: <b>Hafidz Rizal Al-Fadlil</b></p>
+        <p>NIM: <b>256512014</b></p>
+
+      </div>
+      <hr class="border-slate-300 my-4" />
+      <h1 class="text-lg font-bold mb-2 capitalize">
+        Kalkulator Hukum Logika
+      </h1>
+      <div class="grid gap-2">
+        <input
+          type="text"
+          class="border border-slate-300 p-2 outline-none rounded"
+          id="input"
+          disabled
+        />
+        <div class="space-y-2">
+          <div
+            id="buttons"
+            class="flex *:grow gap-2 *:border *:border-slate-300 *:p-2 *:rounded *:hover:bg-slate-300 *:transition-all *:duration-300"
+          ></div>
+          <div
+            id="buttons2"
+            class="flex *:grow gap-2 *:border *:border-slate-300 *:p-2 *:rounded *:hover:bg-slate-300 *:transition-all *:duration-300"
+          ></div>
+          <div
+            id="buttons3"
+            class="flex gap-2 *:border *:border-slate-300 *:p-2 *:rounded *:hover:bg-slate-300 *:transition-all *:duration-300"
+          >
+            <button class="grow bg-slate-100 hover:bg-slate-100!" id="result">
+              Hasil akan tampil di sini
+            </button>
+            <button id="delete">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 9.75 14.25 12m0 0 2.25 2.25M14.25 12l2.25-2.25M14.25 12 12 14.25m-2.58 4.92-6.374-6.375a1.125 1.125 0 0 1 0-1.59L9.42 4.83c.21-.211.497-.33.795-.33H19.5a2.25 2.25 0 0 1 2.25 2.25v10.5a2.25 2.25 0 0 1-2.25 2.25h-9.284c-.298 0-.585-.119-.795-.33Z"
+                />
+              </svg>
+            </button>
+            <button id="clear">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <hr class="border-slate-300 my-4" />
+        <div class="flex">
+          <h1 class="text-lg grow font-bold mb-2 capitalize">Daftar Hukum</h1>
+          <button
+            id="toggleHasil"
+            class="border-slate-300 bg-slate-100 p-2 px-4 rounded hover:bg-slate-200 transition-all duration-300"
+          >
+            tampilkan
+          </button>
+        </div>
+        <div class="listHukum max-h-80 overflow-auto"></div>
+      </div>
+    </div>
+  </body>
+</html>
