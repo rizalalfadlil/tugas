@@ -65,14 +65,17 @@
     function type(value) {
       inputValues.push(value);
       updateText();
+      refreshTampilanHasil()
     }
     function deleteLast() {
       inputValues.pop();
       updateText();
+      refreshTampilanHasil()
     }
     function clear() {
       inputValues = [];
       updateText();
+      refreshTampilanHasil()
     }
 
     function updateText() {
@@ -126,7 +129,24 @@
       if (showList) {
         listHukum.forEach(function (hukum) {
           $(".listHukum").append(
-            `<div class="p-2">
+            `<div class="p-2 ${hukum.nama === hasilText?"bg-green-50 rounded border border-green-400 text-green-700":""}">
+              <p class="font-semibold">${hukum.nama}</p>
+              <ul class="list-disc list-inside text-sm">
+                ${hukum.pola.map((p, i) => `<li>${p}</li>`).join("")}
+              </ul>
+            </div>`
+          );
+        });
+      } else {
+        $(".listHukum").empty();
+      }
+    }
+    function refreshTampilanHasil(){
+      $(".listHukum").empty();
+      if (showList) {
+        listHukum.forEach(function (hukum) {
+          $(".listHukum").append(
+            `<div class="p-2 ${hukum.nama === hasilText?"bg-green-50 rounded border border-green-400 text-green-700":""}">
               <p class="font-semibold">${hukum.nama}</p>
               <ul class="list-disc list-inside text-sm">
                 ${hukum.pola.map((p, i) => `<li>${p}</li>`).join("")}
@@ -168,17 +188,14 @@
       });
     });
   </script>
-  <body class="h-screen bg-slate-50 p-20">
+  <body class="h-screen bg-slate-50 p-4 sm:p-20">
     <div class="shadow-sm p-4 w-full max-w-xl mx-auto bg-white rounded-lg">
       <div class="space-y-2">
         <p>Nama: <b>Hafidz Rizal Al-Fadlil</b></p>
         <p>NIM: <b>256512014</b></p>
-
       </div>
       <hr class="border-slate-300 my-4" />
-      <h1 class="text-lg font-bold mb-2 capitalize">
-        Kalkulator Hukum Logika
-      </h1>
+      <h1 class="text-lg font-bold mb-2 capitalize">Kalkulator Hukum Logika</h1>
       <div class="grid gap-2">
         <input
           type="text"
@@ -248,7 +265,11 @@
         </div>
         <div class="listHukum max-h-80 overflow-auto"></div>
         <hr class="border-slate-300 my-4" />
-        <a href="https://github.com/rizalalfadlil/tugas/blob/main/logika-matematika/Kalkulator-hukum-logika/index.html" class="border-b text-blue-600 hover:bg-blue-100 transition-all duration-300 w-fit">lihat kode</a>
+        <a
+          href="https://github.com/rizalalfadlil/tugas/blob/main/logika-matematika/Kalkulator-hukum-logika/index.html"
+          class="border-b text-blue-600 hover:bg-blue-100 transition-all duration-300 w-fit"
+          >lihat kode</a
+        >
       </div>
     </div>
   </body>
