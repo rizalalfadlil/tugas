@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Presentasi Interaktif: RAM vs. ROM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+      }
+
+      .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateX(100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        text-align: center;
+      }
+      .slide.active {
+        transform: translateX(0);
+      }
+      .slide.prev {
+        transform: translateX(-100%);
+      }
+      .slide-content {
+        -webkit-scrollbar {
+          display: none;
+        }
+
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        max-width: 900px;
+        width: 100%;
+        overflow-y: auto;
+      }
+      .nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+      }
+      .fade-in {
+        animation: fadeIn 0.8s ease-in-out forwards;
+        opacity: 0;
+      }
+      .fade-in-delay-1 {
+        animation-delay: 0.3s;
+      }
+      .fade-in-delay-2 {
+        animation-delay: 0.6s;
+      }
+      .fade-in-delay-3 {
+        animation-delay: 0.9s;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeInDetail {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .detail-fade-in {
+        animation: fadeInDetail 0.5s ease-in-out forwards;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <main
+      id="presentation-container"
+      class="relative w-full h-screen overflow-hidden"
+    >
+      <!-- Slide 1: Judul -->
+      <section class="slide active bg-[#3E474F] text-white">
+        <div class="slide-content text-start">
+          <i class="ph-bold ph-devices text-7xl text-[#00A6FB] fade-in"></i>
+          <p class="text-xl md:text-2xl text-gray-300 fade-in fade-in-delay-1">
+            Perbandingan Memori Komputer
+          </p>
+          <h1
+            class="text-5xl md:text-7xl font-black tracking-tight my-4 fade-in fade-in-delay-2 mb-24"
+          >
+            RAM vs. ROM
+          </h1>
+          <p class="text-xl md:text-2xl fade-in fade-in-delay-3 text-[#00A6FB]">
+            Hafidz Rizal Al-Fadlil
+          </p>
+        </div>
+      </section>
+
+      <!-- Slide 2: QR Code -->
+      <section class="slide bg-white">
+        <div class="slide-content">
+          <i class="ph-bold ph-qr-code text-7xl text-gray-800 fade-in"></i>
+          <h2
+            class="text-3xl md:text-4xl font-bold my-4 fade-in fade-in-delay-1"
+          >
+            Untuk Pengalaman Lebih Baik
+          </h2>
+          <p class="text-lg text-gray-600 mb-6 fade-in fade-in-delay-2">
+            Pindai kode QR atau buka tautan di bawah ini pada ponsel atau laptop
+            Anda karena presentasi ini mengandung elemen interaktif yang bisa
+            anda coba sendiri.
+          </p>
+          <div
+            id="qrcode-container"
+            class="w-48 h-48 bg-white p-2 rounded-lg flex items-center justify-center mx-auto mb-4 fade-in fade-in-delay-2 shadow-md"
+          >
+            <!-- QR Code akan dirender di sini oleh JavaScript -->
+          </div>
+          <a
+            href="#"
+            id="qr-link"
+            class="text-blue-600 hover:underline fade-in fade-in-delay-3 break-all"
+            >Memuat tautan...</a
+          >
+        </div>
+      </section>
+
+      <!-- Slide 3: Pengertian & Analogi Interaktif -->
+      <section class="slide bg-white">
+        <div class="slide-content">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-in">
+            Pengertian Dasar & Analogi
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left mb-8">
+            <!-- RAM Card -->
+            <div
+              class="bg-blue-50 p-6 rounded-lg shadow-md border-l-4 border-[#00A6FB] fade-in fade-in-delay-1"
+            >
+              <div class="flex items-center mb-3">
+                <i class="ph-fill ph-memory text-4xl text-[#00A6FB] mr-3"></i>
+                <h3 class="text-2xl font-bold">RAM</h3>
+              </div>
+              <div id="ram-guesser">
+                <label
+                  for="ram-guess"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Apa kepanjangan dari RAM?</label
+                >
+                <input
+                  type="text"
+                  id="ram-guess"
+                  class="w-full p-2 border rounded-md"
+                  placeholder="Ketik jawaban Anda..."
+                />
+                <button
+                  id="ram-check-btn"
+                  class="mt-2 w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+                >
+                  Cek Jawaban
+                </button>
+                <p id="ram-feedback" class="text-sm h-4 mt-1 font-semibold"></p>
+              </div>
+              <div id="ram-details" class="hidden">
+                <p class="mb-2 text-lg font-bold italic text-blue-800">
+                  Random Access Memory
+                </p>
+                <p class="mb-2">
+                  Memori volatil berkecepatan tinggi untuk data sementara.
+                  Berfungsi sebagai ruang kerja untuk sistem operasi dan
+                  aplikasi yang aktif.
+                </p>
+              </div>
+            </div>
+            <!-- ROM Card -->
+            <div
+              class="bg-red-50 p-6 rounded-lg shadow-md border-l-4 border-[#DC493A] fade-in fade-in-delay-2"
+            >
+              <div class="flex items-center mb-3">
+                <i class="ph-fill ph-cpu text-4xl text-[#DC493A] mr-3"></i>
+                <h3 class="text-2xl font-bold">ROM</h3>
+              </div>
+              <div id="rom-guesser">
+                <label
+                  for="rom-guess"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Apa kepanjangan dari ROM?</label
+                >
+                <input
+                  type="text"
+                  id="rom-guess"
+                  class="w-full p-2 border rounded-md"
+                  placeholder="Ketik jawaban Anda..."
+                />
+                <button
+                  id="rom-check-btn"
+                  class="mt-2 w-full bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition"
+                >
+                  Cek Jawaban
+                </button>
+                <p id="rom-feedback" class="text-sm h-4 mt-1 font-semibold"></p>
+              </div>
+              <div id="rom-details" class="hidden">
+                <p class="mb-2 text-lg font-bold italic text-red-800">
+                  Read Only Memory
+                </p>
+                <p class="mb-2">
+                  Memori permanen untuk instruksi dasar dari pabrikan. Berfungsi
+                  untuk memulai perangkat (booting) dan menjalankan firmware.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            id="analogy-box"
+            class="bg-gray-100 p-6 rounded-lg shadow-inner text-left fade-in fade-in-delay-3"
+          >
+            <h3
+              class="text-xl font-bold mb-2 flex items-center justify-between"
+            >
+              <span
+                ><i
+                  class="ph-fill ph-lightbulb text-3xl mr-3 text-yellow-500"
+                ></i
+                >Analogi</span
+              >
+              <div class="flex items-center gap-2">
+                <button
+                  id="cycle-analogy-btn"
+                  class="group"
+                  title="Analogi Berikutnya"
+                >
+                  <i
+                    class="ph ph-arrow-clockwise text-xl text-gray-400 group-hover:text-gray-800 transition"
+                  ></i>
+                </button>
+              </div>
+            </h3>
+            <p id="analogy-text" class="min-h-[72px]"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 4: RAM Detail Interaktif -->
+      <section class="slide bg-blue-50">
+        <div class="slide-content w-full max-w-5xl">
+          <h2
+            class="text-3xl md:text-4xl font-bold mb-6 text-[#005f8d] fade-in"
+          >
+            Simulasi Kinerja RAM
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+            <div class="fade-in fade-in-delay-1">
+              <i class="ph-bold ph-lightning text-5xl text-[#00A6FB]"></i>
+              <h3 class="text-2xl font-bold my-2">
+                RAM (Random Access Memory)
+              </h3>
+              <p class="mb-4">
+                Memori kerja super cepat namun bersifat
+                <strong>sementara</strong>. Kecepatannya krusial untuk
+                multitasking.
+              </p>
+              <div class="space-y-2">
+                <div
+                  class="bg-white p-3 rounded-lg shadow-sm flex items-center gap-3"
+                >
+                  <i class="ph-fill ph-pencil-line text-2xl"></i>
+                  <p>Baca & Tulis</p>
+                </div>
+                <div
+                  class="bg-white p-3 rounded-lg shadow-sm flex items-center gap-3"
+                >
+                  <i class="ph-fill ph-rocket-launch text-2xl"></i>
+                  <p>Sangat Cepat</p>
+                </div>
+                <div
+                  class="bg-white p-3 rounded-lg shadow-sm flex items-center gap-3"
+                >
+                  <i class="ph-fill ph-plugs-connected text-2xl"></i>
+                  <p>Bisa di-Upgrade</p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-lg shadow-lg fade-in fade-in-delay-2"
+            >
+              <button
+                class="bg-[#DC493A] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#b03a2e] transition mb-2"
+                onclick="window.location.reload()"
+              >
+                <i class="ph-fill ph-arrow-clockwise"></i>
+              </button>
+              <h4 class="font-bold text-lg mb-2">Coba Jalankan Proses</h4>
+              <p class="text-sm mb-4 text-gray-600">
+                Masukkan beberapa proses (satu per baris) dan lihat bagaimana
+                ukuran RAM memengaruhi kecepatan.
+              </p>
+              <label for="ram-size" class="font-semibold block mb-1"
+                >Pilih Ukuran RAM:</label
+              >
+              <select
+                id="ram-size"
+                class="w-full p-2 border rounded-md mb-4 bg-gray-50"
+              >
+                <option value="4" selected>4 GB</option>
+                <option value="8">8 GB</option>
+                <option value="16">16 GB</option>
+              </select>
+              <label for="ram-processes" class="font-semibold block mb-1"
+                >Proses yang Berjalan:</label
+              >
+              <textarea
+                id="ram-processes"
+                rows="4"
+                class="w-full p-2 border rounded-md mb-4"
+                placeholder="Contoh:&#10;Bermain Game&#10;Streaming Video&#10;Mengedit Foto"
+              >
+Buka Discord
+Buka Steam
+Buka Spotify</textarea
+              >
+              <button
+                id="run-ram-sim"
+                class="w-full bg-[#00A6FB] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#008dcf] transition"
+              >
+                Jalankan Simulasi
+              </button>
+              <div
+                class="mt-4 h-6 w-full bg-gray-200 rounded-full overflow-hidden"
+              >
+                <div
+                  id="ram-progress-bar"
+                  class="h-full bg-green-500 transition-all duration-300"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <p id="ram-result" class="mt-2 text-center font-semibold h-6"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 5: ROM Detail Interaktif -->
+      <section class="slide bg-red-50">
+        <div class="slide-content w-full max-w-5xl">
+          <h2
+            class="text-3xl md:text-4xl font-bold mb-6 text-[#a33a2e] fade-in"
+          >
+            Simulasi Proses Startup ROM
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+            <div class="fade-in fade-in-delay-1">
+              <i class="ph-bold ph-floppy-disk text-5xl text-[#DC493A]"></i>
+              <h3 class="text-2xl font-bold my-2">ROM (Read-Only Memory)</h3>
+              <p class="mb-4">
+                Memori <strong>permanen</strong> yang menyimpan instruksi
+                startup. Isinya tidak bisa diubah dan tidak terpengaruh daya.
+              </p>
+              <div class="space-y-2">
+                <div
+                  class="bg-white p-3 rounded-lg shadow-sm flex items-center gap-3"
+                >
+                  <i class="ph-fill ph-lock-simple text-2xl"></i>
+                  <p>Hanya Baca</p>
+                </div>
+                <div
+                  class="bg-white p-3 rounded-lg shadow-sm flex items-center gap-3"
+                >
+                  <i class="ph-fill ph-hourglass text-2xl"></i>
+                  <p>Lebih Lambat</p>
+                </div>
+                <div
+                  class="bg-white p-3 rounded-lg shadow-sm flex items-center gap-3"
+                >
+                  <i class="ph-fill ph-cpu text-2xl"></i>
+                  <p>Tertanam Permanen</p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-lg shadow-lg fade-in fade-in-delay-2"
+            >
+              <h4 class="font-bold text-lg mb-2">Urutan Startup Sistem</h4>
+              <p class="text-sm mb-4 text-gray-600">
+                ROM menjalankan proses-proses ini secara berurutan setiap kali
+                perangkat dinyalakan. Proses ini tetap dan tidak dapat diubah.
+              </p>
+              <label for="rom-processes" class="font-semibold block mb-1"
+                >Proses Startup:</label
+              >
+              <textarea
+                id="rom-processes"
+                rows="4"
+                class="w-full p-2 border rounded-md mb-4 bg-gray-100 cursor-not-allowed"
+                readonly
+              >
+Inisialisasi BIOS/UEFI
+POST (Power-On Self-Test)
+Mencari Boot Device
+Memuat Bootloader Sistem Operasi</textarea
+              >
+              <button
+                id="run-rom-sim"
+                class="w-full bg-[#DC493A] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#b03a2e] transition"
+              >
+                Mulai Urutan Startup
+              </button>
+              <div
+                class="mt-4 h-6 w-full bg-gray-200 rounded-full overflow-hidden"
+              >
+                <div
+                  id="rom-progress-bar"
+                  class="h-full bg-green-500 transition-all duration-300"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <p id="rom-result" class="mt-2 text-center font-semibold h-6"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 6: Kesimpulan -->
+      <section class="slide bg-[#3E474F] text-white">
+        <div class="slide-content">
+          <i class="ph-bold ph-handshake text-7xl text-green-400 fade-in"></i>
+          <h2
+            class="text-4xl md:text-5xl font-bold my-4 fade-in fade-in-delay-1"
+          >
+            Kesimpulan
+          </h2>
+          <div
+            class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto fade-in fade-in-delay-2"
+          >
+            <p>RAM dan ROM sama-sama bagian penting dari sistem komputer,</p>
+            <p>
+              Keduanya bekerja saling melengkapi, ROM untuk memulai sistem, dan
+              RAM untuk menjalankan sistem.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 7: Tanya Jawab -->
+      <section class="slide bg-gray-100">
+        <div class="slide-content w-full max-w-3xl">
+          <i class="ph-bold ph-question text-7xl text-blue-500 fade-in"></i>
+          <h2
+            class="text-3xl md:text-4xl font-bold my-4 fade-in fade-in-delay-1"
+          >
+            Sesi Tanya Jawab
+          </h2>
+          <p class="text-lg text-gray-600 mb-6 fade-in fade-in-delay-2">
+            Punya pertanyaan lain tentang RAM atau ROM?
+          </p>
+          <div class="w-full mx-auto fade-in fade-in-delay-3">
+            <div class="flex gap-2">
+              <input
+                id="qa-input"
+                type="text"
+                placeholder="Pertanyaan tentang RAM atau ROM"
+                class="w-full p-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              />
+              <button
+                id="qa-submit-btn"
+                class="bg-blue-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-600 transition disabled:bg-blue-300"
+              >
+                Tanya
+              </button>
+            </div>
+            <div
+              id="qa-answer-box"
+              class="mt-4 p-4 bg-white rounded-lg shadow-inner text-left min-h-[120px] max-h-48 overflow-y-auto hidden"
+            >
+              <p id="qa-placeholder" class="text-gray-500">
+                Jawaban akan muncul di sini...
+              </p>
+              <div id="qa-answer" class="hidden whitespace-pre-wrap"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 8: Penutup -->
+      <section class="slide bg-[#3E474F] text-white">
+        <div class="slide-content">
+          <i class="ph-bold ph-sparkle text-7xl text-yellow-300 fade-in"></i>
+          <h2
+            class="text-4xl md:text-5xl font-bold my-4 fade-in fade-in-delay-1"
+          >
+            Terima Kasih!
+          </h2>
+          <p class="text-xl md:text-2xl text-gray-300 fade-in fade-in-delay-2">
+            Semoga presentasi interaktif ini bermanfaat.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Navigasi -->
+    <button
+      id="prev-btn"
+      class="nav-button left-4 bg-white/50 p-3 rounded-full hover:bg-white/80 transition-opacity opacity-0 hidden"
+    >
+      <i class="ph ph-caret-left text-2xl"></i>
+    </button>
+    <button
+      id="next-btn"
+      class="nav-button right-4 bg-white/50 p-3 rounded-full hover:bg-white/80 transition-opacity"
+    >
+      <i class="ph ph-caret-right text-2xl"></i>
+    </button>
+
+    <!-- Progress Bar -->
+    <div class="absolute bottom-0 left-0 h-1 bg-gray-300 w-full">
+      <div
+        id="progress-bar"
+        class="h-1 bg-[#00A6FB] transition-all duration-300"
+      ></div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const slides = document.querySelectorAll(".slide");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const progressBar = document.getElementById("progress-bar");
+        let currentSlide = 0;
+
+        function updateSlides() {
+          slides.forEach((slide, index) => {
+            slide.classList.remove("active", "prev");
+            if (index === currentSlide) {
+              slide.classList.add("active");
+              const animatedElements = slide.querySelectorAll(".fade-in");
+              animatedElements.forEach((el) => {
+                el.style.animation = "none";
+                el.offsetHeight;
+                el.style.animation = null;
+              });
+            } else if (index < currentSlide) {
+              slide.classList.add("prev");
+            }
+          });
+
+          progressBar.style.width = `${
+            ((currentSlide + 1) / slides.length) * 100
+          }%`;
+
+          if (currentSlide === 0) {
+            prevBtn.classList.add("opacity-0", "hidden");
+          } else {
+            prevBtn.classList.remove("opacity-0", "hidden");
+          }
+
+          if (currentSlide === slides.length - 1) {
+            nextBtn.classList.add("opacity-0", "hidden");
+          } else {
+            nextBtn.classList.remove("opacity-0", "hidden");
+          }
+        }
+
+        nextBtn.addEventListener("click", () => {
+          if (currentSlide < slides.length - 1) {
+            currentSlide++;
+            updateSlides();
+          }
+        });
+
+        prevBtn.addEventListener("click", () => {
+          if (currentSlide > 0) {
+            currentSlide--;
+            updateSlides();
+          }
+        });
+
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowRight") {
+            nextBtn.click();
+          } else if (e.key === "ArrowLeft") {
+            prevBtn.click();
+          }
+        });
+
+        // Generate QR Code
+        const qrCodeContainer = document.getElementById("qrcode-container");
+        const qrLink = document.getElementById("qr-link");
+        if (qrCodeContainer && qrLink) {
+          const currentUrl = window.location.href;
+
+          qrLink.href = currentUrl;
+          qrLink.textContent = currentUrl;
+
+          QRCode.toDataURL(
+            currentUrl,
+            { width: 176, margin: 1 },
+            function (error, url) {
+              if (error) {
+                console.error(error);
+                qrCodeContainer.textContent = "Gagal memuat QR Code.";
+              } else {
+                const img = document.createElement("img");
+                img.src = url;
+                img.alt = "QR Code for current URL";
+                qrCodeContainer.innerHTML = ""; // Clear previous content
+                qrCodeContainer.appendChild(img);
+              }
+            }
+          );
+        }
+
+        // Analogy Cycler
+        const Analogies = [
+          "Bayangkan <strong>otak manusia</strong>. <strong>ROM</strong> seperti <strong>ingatan jangka panjang</strong> atau insting, seperti cara bernapas atau berjalan. Sementara <strong>RAM</strong> adalah <strong>ingatan jangka pendek</strong> atau pikiran sadar Anda.<br> ia memproses apa yang sedang Anda pikirkan saat ini, namun kapasitasnya terbatas dan akan lupa jika tidak lagi fokus.",
+          "Bayangkan komputer Anda adalah sebuah <strong>ruang kerja</strong>. <strong>ROM</strong> adalah instruksi dasar yang tertempel permanen di dinding tentang cara menyalakan lampu. Sementara <strong>RAM</strong> adalah <strong>meja kerja</strong> Anda.<br> semakin besar mejanya, semakin banyak tugas yang bisa Anda kerjakan sekaligus. Saat Anda pergi dan mematikan lampu, meja kerja akan kosong kembali.",
+          "Bayangkan Anda sedang <strong>memasak di dapur</strong>. <strong>ROM</strong> adalah <strong>buku resep masakan</strong> warisan keluarga yang isinya tidak pernah berubah. Sementara <strong>RAM</strong> adalah <strong>talenan dan meja persiapan</strong> Anda.<br> semakin luas, semakin banyak bahan yang bisa Anda siapkan bersamaan. Setelah selesai memasak, meja persiapan dibersihkan untuk masakan berikutnya.",
+        ];
+        let analogies = [...Analogies];
+        let currentAnalogyIndex = 0;
+        const cycleAnalogyBtn = document.getElementById("cycle-analogy-btn");
+        const analogyText = document.getElementById("analogy-text");
+
+        function updateAnalogy() {
+          analogyText.innerHTML = analogies[currentAnalogyIndex];
+        }
+
+        cycleAnalogyBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          currentAnalogyIndex = (currentAnalogyIndex + 1) % analogies.length;
+          updateAnalogy();
+        });
+
+        updateAnalogy();
+
+        // Interactive Acronym Guessing Game
+        const ramGuessInput = document.getElementById("ram-guess");
+        const ramCheckBtn = document.getElementById("ram-check-btn");
+        const ramGuesser = document.getElementById("ram-guesser");
+        const ramDetails = document.getElementById("ram-details");
+        const ramFeedback = document.getElementById("ram-feedback");
+
+        const romGuessInput = document.getElementById("rom-guess");
+        const romCheckBtn = document.getElementById("rom-check-btn");
+        const romGuesser = document.getElementById("rom-guesser");
+        const romDetails = document.getElementById("rom-details");
+        const romFeedback = document.getElementById("rom-feedback");
+
+        const checkAnswer = (
+          input,
+          correctAnswer,
+          guesser,
+          details,
+          feedback
+        ) => {
+          const userAnswer = input.value.trim().toLowerCase();
+          const formattedCorrectAnswer = correctAnswer.toLowerCase();
+
+          if (userAnswer === formattedCorrectAnswer) {
+            feedback.textContent = "Benar!";
+            feedback.classList.add("text-green-600");
+            feedback.classList.remove("text-red-600");
+
+            guesser.style.transition = "opacity 0.3s ease-out";
+            guesser.style.opacity = "0";
+            setTimeout(() => {
+              guesser.classList.add("hidden");
+              details.classList.remove("hidden");
+              details.classList.add("detail-fade-in");
+            }, 300);
+          } else {
+            feedback.textContent = "Coba lagi!";
+            feedback.classList.add("text-red-600");
+            feedback.classList.remove("text-green-600");
+            input.focus();
+          }
+        };
+
+        ramCheckBtn.addEventListener("click", () => {
+          checkAnswer(
+            ramGuessInput,
+            "Random Access Memory",
+            ramGuesser,
+            ramDetails,
+            ramFeedback
+          );
+        });
+
+        ramGuessInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") ramCheckBtn.click();
+        });
+
+        romCheckBtn.addEventListener("click", () => {
+          checkAnswer(
+            romGuessInput,
+            "Read Only Memory",
+            romGuesser,
+            romDetails,
+            romFeedback
+          );
+        });
+
+        romGuessInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") romCheckBtn.click();
+        });
+
+        const runRamSimBtn = document.getElementById("run-ram-sim");
+        const ramResult = document.getElementById("ram-result");
+        const ramProgressBar = document.getElementById("ram-progress-bar");
+
+        runRamSimBtn.addEventListener("click", () => {
+          const processesText = document.getElementById("ram-processes").value;
+          const ramSize = parseInt(document.getElementById("ram-size").value);
+          const numProcesses = processesText
+            .split("\n")
+            .filter((line) => line.trim() !== "").length;
+          if (numProcesses === 0) {
+            ramResult.textContent = "Masukkan setidaknya satu proses.";
+            ramResult.style.color = "red";
+            return;
+          }
+          const speedMultiplier = { 16: 1, 8: 1.5, 4: 2.5 };
+          const baseTimePerProcess = 400;
+          const totalDuration =
+            numProcesses * baseTimePerProcess * speedMultiplier[ramSize];
+          runRamSimBtn.disabled = true;
+          ramResult.textContent = "Memproses...";
+          ramResult.style.color = "initial";
+          ramProgressBar.style.width = "0%";
+          let startTime = Date.now();
+          const interval = setInterval(() => {
+            const elapsedTime = Date.now() - startTime;
+            const progress = Math.min((elapsedTime / totalDuration) * 100, 100);
+            ramProgressBar.style.width = `${progress}%`;
+            if (progress >= 100) {
+              clearInterval(interval);
+              ramResult.textContent = `Selesai dalam ${(
+                totalDuration / 1000
+              ).toFixed(2)} detik!`;
+              ramResult.style.color = "green";
+              runRamSimBtn.disabled = false;
+            }
+          }, 50);
+        });
+
+        const runRomSimBtn = document.getElementById("run-rom-sim");
+        const romResult = document.getElementById("rom-result");
+        const romProgressBar = document.getElementById("rom-progress-bar");
+
+        runRomSimBtn.addEventListener("click", () => {
+          const totalDuration = 3000;
+          runRomSimBtn.disabled = true;
+          romResult.textContent = "Memulai...";
+          romResult.style.color = "initial";
+          romProgressBar.style.width = "0%";
+          let startTime = Date.now();
+          const interval = setInterval(() => {
+            const elapsedTime = Date.now() - startTime;
+            const progress = Math.min((elapsedTime / totalDuration) * 100, 100);
+            romProgressBar.style.width = `${progress}%`;
+            if (progress >= 100) {
+              clearInterval(interval);
+              romResult.textContent = `Urutan Startup Selesai.`;
+              romResult.style.color = "green";
+              runRomSimBtn.disabled = false;
+            }
+          }, 50);
+        });
+
+        const qaSubmitBtn = document.getElementById("qa-submit-btn");
+        const qaInput = document.getElementById("qa-input");
+        const qaAnswer = document.getElementById("qa-answer");
+        const qaAnswerBox = document.getElementById("qa-answer-box");
+        const qaPlaceholder = document.getElementById("qa-placeholder");
+
+        const handleQA = async () => {
+          const userQuery = qaInput.value;
+          if (!userQuery.trim()) return;
+
+          qaSubmitBtn.disabled = true;
+          qaPlaceholder.classList.add("hidden");
+          qaAnswer.classList.remove("hidden");
+          qaAnswer.textContent = "Sedang berpikir... 🧠";
+
+          const apiKey = "AIzaSyCM7kWVpgFkfINqI5-YkBOPcjCVGD-_WYk";
+          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+          const systemPrompt =
+            "Anda adalah asisten ahli yang menjawab pertanyaan seputar RAM (Random Access Memory) dan ROM (Read-Only Memory). Berikan jawaban yang singkat, jelas, dan mudah dipahami dalam konteks presentasi komputer dasar. Jawab dalam Bahasa Indonesia. jawab hanya dengan teks biasa tanpa simbol markdown";
+
+          const payload = {
+            contents: [{ parts: [{ text: userQuery }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+          };
+
+          try {
+            const response = await fetch(apiUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            if (!response.ok)
+              throw new Error(`HTTP error! status: ${response.status}`);
+
+            const result = await response.json();
+            const candidate = result.candidates?.[0];
+
+            if (candidate && candidate.content?.parts?.[0]?.text) {
+              qaAnswer.textContent = candidate.content.parts[0].text;
+              qaAnswerBox.classList.remove("hidden");
+            } else {
+              qaAnswer.textContent =
+                "Maaf, saya tidak dapat menemukan jawaban saat ini. Coba lagi nanti.";
+            }
+          } catch (error) {
+            console.error("Error calling Gemini API:", error);
+            qaAnswer.textContent =
+              "Terjadi kesalahan saat mencoba mendapatkan jawaban. Periksa koneksi Anda dan coba lagi.";
+          } finally {
+            qaSubmitBtn.disabled = false;
+          }
+        };
+
+        qaSubmitBtn.addEventListener("click", handleQA);
+        qaInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") handleQA();
+        });
+
+        updateSlides();
+      });
+    </script>
+  </body>
+</html>
