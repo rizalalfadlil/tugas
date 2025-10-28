@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>UTS Logika Matematika - Level 6</title>
+  </head>
+  <body>
+    <h1>UTS Logika Matematika</h1>
+    <p>
+      <b>Nama:</b> [Nama Kamu]<br />
+      <b>NIM:</b> [NIM Kamu]<br />
+      <b>Kelas:</b> [Kelas Kamu]<br />
+      <b>Dosen:</b> [Nama Dosen]<br />
+      <b>Kampus:</b> [Nama Kampus]
+    </p>
+    <label>Kurs 1 gram emas (Rp): </label>
+    <input type="number" id="kurs" value="2321000" /><br /><br />
+
+    <label><input type="checkbox" id="cekEmas" /> Zakat Emas</label>
+    <input type="number" id="emas" placeholder="gram" /><br />
+
+    <label><input type="checkbox" id="cekPertanian" /> Zakat Pertanian</label>
+    <input type="number" id="pertanian" placeholder="kg" /><br />
+
+    <label><input type="checkbox" id="cekGaji" /> Zakat Penghasilan</label>
+    <input type="number" id="gaji" placeholder="Rp" /><br /><br />
+
+    <label>Lama Kepemilikan (tahun):</label>
+    <input type="number" id="haul" min="0" /><br /><br />
+
+    <button onclick="hitungTotal()">Hitung Total Zakat</button>
+    <p id="hasil"></p>
+
+    <script>
+      function hitungTotal() {
+        const kurs = parseFloat(document.getElementById("kurs").value);
+        const haul = parseFloat(document.getElementById("haul").value);
+        let total = 0;
+
+        // Zakat emas
+        if (document.getElementById("cekEmas").checked) {
+          const emas = parseFloat(document.getElementById("emas").value);
+          if (emas >= 85 && haul >= 1) total += emas * kurs * 0.025;
+        }
+
+        // Zakat pertanian
+        if (document.getElementById("cekPertanian").checked) {
+          const pertanian = parseFloat(
+            document.getElementById("pertanian").value
+          );
+          if (pertanian >= 520) total += pertanian * kurs * 0.1;
+        }
+
+        // Zakat penghasilan
+        if (document.getElementById("cekGaji").checked) {
+          const gaji = parseFloat(document.getElementById("gaji").value);
+          const nisab = 85 * kurs;
+          if (gaji >= nisab) total += gaji * 0.025;
+        }
+
+        document.getElementById("hasil").textContent =
+          "Total zakat yang harus dibayarkan: Rp " + total.toLocaleString();
+      }
+    </script>
+  </body>
+</html>

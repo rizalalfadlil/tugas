@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><meta charset="UTF-8"><title>Level 7 - Zakat Maal Total</title></head>
+<body>
+<h1>Zakat Maal Total</h1>
+<p><b>Nama:</b> [Nama Kamu]<br>
+  <b>NIM:</b> [NIM Kamu]<br>
+  <b>Kelas:</b> [Kelas Kamu]<br>
+  <b>Dosen:</b> [Nama Dosen]<br>
+  <b>Kampus:</b> [Nama Kampus]</p>
+<label>Kurs 1 gram emas (Rp):</label>
+<input type="number" id="kurs" value="2321000"><br><br>
+
+<div>
+  <label><input type="checkbox" class="harta" value="emas"> Emas</label>
+  <input type="number" id="emas" placeholder="gram"><br>
+
+  <label><input type="checkbox" class="harta" value="perak"> Perak</label>
+  <input type="number" id="perak" placeholder="gram"><br>
+
+  <label><input type="checkbox" class="harta" value="uang"> Uang & surat berharga</label>
+  <input type="number" id="uang" placeholder="Rp"><br>
+
+  <label><input type="checkbox" class="harta" value="perniagaan"> Perniagaan</label>
+  <input type="number" id="perniagaan" placeholder="Rp"><br>
+
+  <label><input type="checkbox" class="harta" value="peternakan"> Peternakan</label>
+  <input type="number" id="peternakan" placeholder="Rp"><br>
+
+  <label><input type="checkbox" class="harta" value="pertambangan"> Pertambangan</label>
+  <input type="number" id="pertambangan" placeholder="Rp"><br>
+
+  <label><input type="checkbox" class="harta" value="investasi"> Investasi</label>
+  <input type="number" id="investasi" placeholder="Rp"><br>
+
+  <label><input type="checkbox" class="harta" value="tabungan"> Tabungan</label>
+  <input type="number" id="tabungan" placeholder="Rp"><br>
+
+  <label><input type="checkbox" class="harta" value="rikaz"> Rikaz (harta temuan)</label>
+  <input type="number" id="rikaz" placeholder="Rp"><br>
+</div><br>
+
+<button onclick="totalZakat()">Hitung Total Zakat</button>
+<p id="hasil"></p>
+
+<script>
+function totalZakat(){
+  const kurs = parseFloat(document.getElementById('kurs').value);
+  let total = 0;
+
+  const nisab = 85 * kurs;
+  const jenis = ['emas','perak','uang','perniagaan','peternakan','pertambangan','investasi','tabungan','rikaz'];
+
+  jenis.forEach(j=>{
+    if(document.querySelector(`input[value='${j}']`).checked){
+      const val = parseFloat(document.getElementById(j).value);
+      if(isNaN(val)) return;
+      switch(j){
+        case 'emas': if(val*kurs>=nisab) total += val*kurs*0.025; break;
+        case 'perak': if(val>=595) total += val*kurs*0.025; break;
+        case 'uang': if(val>=nisab) total += val*0.025; break;
+        case 'perniagaan': if(val>=nisab) total += val*0.025; break;
+        case 'peternakan': total += val*0.025; break;
+        case 'pertambangan': total += val*0.025; break;
+        case 'investasi': total += val*0.05; break;
+        case 'tabungan': total += val*0.025; break;
+        case 'rikaz': total += val*0.20; break; // 20% langsung
+      }
+    }
+  });
+
+  document.getElementById('hasil').textContent =
+    "Total zakat maal yang harus dibayar: Rp " + total.toLocaleString();
+}
+</script>
+</body>
+</html>

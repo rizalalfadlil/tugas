@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>UTS Logika Matematika - Level 2</title>
+  </head>
+  <body>
+    <h1>UTS Logika Matematika</h1>
+    <p>
+      <b>Nama:</b> [Nama Kamu]<br />
+      <b>NIM:</b> [NIM Kamu]<br />
+      <b>Kelas:</b> [Kelas Kamu]<br />
+      <b>Dosen:</b> [Nama Dosen]<br />
+      <b>Kampus:</b> [Nama Kampus]
+    </p>
+    <label>
+      <input type="checkbox" id="cekEmas" onchange="toggleInput()" /> Jumlah
+      emas:
+    </label>
+    <input type="number" id="emas" disabled /><br /><br />
+
+    <label>Lama kepemilikan (tahun):</label>
+    <input type="number" id="haul" /><br /><br />
+
+    <button onclick="cekZakat()">Cek Zakat</button>
+    <p id="hasil"></p>
+
+    <script>
+      function toggleInput() {
+        const cekEmas = document.getElementById("cekEmas");
+        const emas = document.getElementById("emas");
+        if (cekEmas.checked) {
+          emas.disabled = false;
+        } else {
+          emas.disabled = true;
+          emas.value = 0;
+        }
+      }
+
+      function cekZakat() {
+        const emas = parseFloat(document.getElementById("emas").value);
+        const haul = parseFloat(document.getElementById("haul").value);
+        const hasil = document.getElementById("hasil");
+
+        if (emas >= 85 && haul >= 1) hasil.textContent = "Wajib Zakat";
+        else hasil.textContent = "Tidak Wajib Zakat";
+      }
+    </script>
+  </body>
+</html>

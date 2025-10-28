@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><meta charset="UTF-8"><title>Level 9 - Distribusi Mustahik</title></head>
+<body>
+<h1>Distribusi Zakat ke Mustahik</h1>
+<p><b>Nama:</b> [Nama Kamu]<br>
+  <b>NIM:</b> [NIM Kamu]<br>
+  <b>Kelas:</b> [Kelas Kamu]<br>
+  <b>Dosen:</b> [Nama Dosen]<br>
+  <b>Kampus:</b> [Nama Kampus]</p>
+<label>Total Zakat (Rp):</label>
+<input type="number" id="totalZakat"><br><br>
+
+<p>Pilih golongan mustahik penerima zakat:</p>
+<div id="mustahikList">
+  <label><input type="checkbox" value="Fakir"> Fakir</label><br>
+  <label><input type="checkbox" value="Miskin"> Miskin</label><br>
+  <label><input type="checkbox" value="Amil"> Amil</label><br>
+  <label><input type="checkbox" value="Muallaf"> Muallaf</label><br>
+  <label><input type="checkbox" value="Riqab"> Riqab (hamba sahaya)</label><br>
+  <label><input type="checkbox" value="Gharim"> Gharim (orang berutang)</label><br>
+  <label><input type="checkbox" value="Fisabilillah"> Fi Sabilillah</label><br>
+  <label><input type="checkbox" value="IbnuSabil"> Ibnu Sabil (musafir)</label><br>
+</div><br>
+
+<button onclick="distribusi()">Hitung Distribusi</button>
+<p id="hasil"></p>
+
+<script>
+function distribusi(){
+  const total = parseFloat(document.getElementById('totalZakat').value);
+  const ceklis = [...document.querySelectorAll('#mustahikList input:checked')];
+  const hasil = document.getElementById('hasil');
+
+  if(ceklis.length === 0){
+    hasil.textContent = "Pilih minimal satu mustahik.";
+    return;
+  }
+
+  const perOrang = total / ceklis.length;
+  let teks = "Distribusi Zakat:\n";
+  ceklis.forEach(c=>{
+    teks += `${c.value}: Rp ${perOrang.toLocaleString()}\n`;
+  });
+
+  hasil.textContent = teks;
+}
+</script>
+</body>
+</html>

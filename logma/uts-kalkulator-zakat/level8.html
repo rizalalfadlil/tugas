@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head><meta charset="UTF-8"><title>Level 8 - Pilihan Jenis Zakat</title></head>
+<body>
+<h1>Pilihan Jenis Zakat</h1>
+<p><b>Nama:</b> [Nama Kamu]<br>
+  <b>NIM:</b> [NIM Kamu]<br>
+  <b>Kelas:</b> [Kelas Kamu]<br>
+  <b>Dosen:</b> [Nama Dosen]<br>
+  <b>Kampus:</b> [Nama Kampus]</p>
+<select id="jenisZakat" onchange="ubahJenis()">
+  <option value="maal">Zakat Maal</option>
+  <option value="fitrah">Zakat Fitrah</option>
+</select><br><br>
+
+<div id="maalSection">
+  <label>Jumlah harta (Rp):</label>
+  <input type="number" id="harta"><br><br>
+  <label>Lama kepemilikan (tahun):</label>
+  <input type="number" id="haul"><br><br>
+</div>
+
+<div id="fitrahSection" style="display:none">
+  <label>Jumlah jiwa dalam keluarga:</label>
+  <input type="number" id="jiwa"><br><br>
+  <p>(Zakat Fitrah = 2,5 kg beras × Rp harga beras/kg)</p>
+  <label>Harga beras/kg (Rp):</label>
+  <input type="number" id="hargaBeras" value="15000"><br><br>
+</div>
+
+<button onclick="hitungZakat()">Hitung Zakat</button>
+<p id="hasil"></p>
+
+<script>
+function ubahJenis(){
+  const jenis = document.getElementById('jenisZakat').value;
+  document.getElementById('maalSection').style.display = (jenis==='maal')?'block':'none';
+  document.getElementById('fitrahSection').style.display = (jenis==='fitrah')?'block':'none';
+}
+
+function hitungZakat(){
+  const jenis = document.getElementById('jenisZakat').value;
+  const hasil = document.getElementById('hasil');
+  let total = 0;
+
+  if(jenis==='maal'){
+    const harta = parseFloat(document.getElementById('harta').value);
+    const haul = parseFloat(document.getElementById('haul').value);
+    const nisab = 85 * 2321000;
+    if(harta >= nisab && haul >= 1){
+      total = harta * 0.025;
+      hasil.textContent = "Zakat Maal wajib dibayar sebesar Rp " + total.toLocaleString();
+    } else hasil.textContent = "Belum wajib zakat maal.";
+  } else {
+    const jiwa = parseFloat(document.getElementById('jiwa').value);
+    const harga = parseFloat(document.getElementById('hargaBeras').value);
+    total = jiwa * 2.5 * harga;
+    hasil.textContent = "Total Zakat Fitrah keluarga: Rp " + total.toLocaleString();
+  }
+}
+</script>
+</body>
+</html>
